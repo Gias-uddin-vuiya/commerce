@@ -3,5 +3,16 @@
 {% block body %}
     <h2>Active Listings</h2>
 
-    TODO
+    {% for auction in auctions %}
+        <div class="auction-item">
+            <h3>{{ auction.title }}</h3>
+            <img src="{{auction.image_url}}" width="300px" alt="images is not found">
+            <p>{{ auction.description }}</p>
+            <p>Current Bid: ${{ auction.starting_bid }}</p>
+            <!-- here i will add a link for seeing auction details -->
+        </div>
+    {% empty %}
+        <p>No active listings available.</p>
+    {% endfor %}
+
 {% endblock %}

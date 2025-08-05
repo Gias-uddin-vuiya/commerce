@@ -8,7 +8,11 @@ from .models import User, Auctions
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    auction = Auctions.objects.all()
+
+    return render(request, "auctions/index.html", {
+        "auctions": auction,
+    })
 
 def create(request):
 
