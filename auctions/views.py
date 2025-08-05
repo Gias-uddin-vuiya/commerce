@@ -4,13 +4,41 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import User, Auctions
 
 
 def index(request):
     return render(request, "auctions/index.html")
 
 def create(request):
+
+    if request.method == "POST":
+        title = request.POST["title"]
+        description = request.POST["description"]
+        starting_bid = request.POST["starting_bid"]
+        image_url = request.POST.get("image_url", "")
+        category = request.POST.get("category", "")
+
+        # Create a new auction
+        auction = Auctions(
+            title=title,
+            description=description,
+            starting_bid=starting_bid,
+            image_url=image_url,
+            category=category,
+            creator=request.user
+        )
+        # Save the auction to the database
+        auction.save()
+        
+        if auction.id:
+            return HttpResponseRedirect(reverse("index"), {
+                "message": "Auction created successfully!"})
+        # Redirect to the index page after creating the auction 
+        else:
+           return render(request, "auctions/create.html", {
+                "message": "Error creating auction. Please try again."
+            })
 
     return render(request, "auctions/create.html", {
         "message": "Create Auction"
