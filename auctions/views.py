@@ -14,6 +14,13 @@ def index(request):
     })
 
 
+def watchlist(request):
+    # Assuming you have a Watchlist model or similar logic to fetch watchlist items
+    # For now, we will just return a placeholder response
+    return render(request, "auctions/watchlist.html", {
+        "message": "Your Watchlist"
+    })
+
 def details(request, auction_id):
     try:
         auction = Auctions.objects.get(id=auction_id)
