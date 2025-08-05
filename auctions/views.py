@@ -9,9 +9,21 @@ from .models import User, Auctions
 
 def index(request):
     auction = Auctions.objects.all()
-
     return render(request, "auctions/index.html", {
         "auctions": auction,
+    })
+
+
+def details(request, auction_id):
+    try:
+        auction = Auctions.objects.get(id=auction_id)
+       
+    except Auctions.DoesNotExist:
+        return HttpResponse("Auction not found.", status=404)
+
+    return render(request, "auctions/details.html", {
+        "auction": auction,
+        "message": "Auction Details"
     })
 
 def create(request):

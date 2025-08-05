@@ -9,7 +9,7 @@
             <img src="{{auction.image_url}}" width="300px" alt="images is not found">
             <p>{{ auction.description }}</p>
             <p>Current Bid: ${{ auction.starting_bid }}</p>
-            <!-- here i will add a link for seeing auction details -->
+            <a href="{% url 'details' auction.id %}">View Details</a>
         </div>
     {% empty %}
         <p>No active listings available.</p>
