@@ -2,4 +2,22 @@
 
 {% block body %}
     <h2>Watchlist</h2>
+
+    {% if watchlists %}
+        <ul>
+            {% for watchlist in watchlists %}
+            <div class="auction-item">
+                <h3>{{ watchlist.title }}</h3>
+                <img src="{{watchlist.image_url}}" width="300px" alt="images is not found">
+                <p>{{ watchlist.description }}</p>
+                <p>Current Bid: ${{ watchlist.starting_bid }}</p>
+                <a href="{% url 'details' watchlist.id %}">View Details</a>
+            </div>
+            {% empty %}
+                <p>No items in your watchlist.</p>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Your watchlist is empty.</p>
+    {% endif %}
 {% endblock %}

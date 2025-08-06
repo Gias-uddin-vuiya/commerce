@@ -12,7 +12,7 @@
             <p>Created on: {{ auction.created_at }}</p>
 
             {% if user.is_authenticated %}
-                <form action="#" method="post">
+                <form action="{% url 'toggle_watchlist' auction.id %}" method="post">
                     {% csrf_token %}
                     {% if in_watchlist %}
                         <button type="submit">Remove from Watchlist</button>

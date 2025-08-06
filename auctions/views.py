@@ -3,8 +3,9 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.shortcuts import get_object_or_404, redirect
 
-from .models import User, Auctions
+from .models import User, Auctions, Watchlist
 
 
 def index(request):
@@ -15,12 +16,24 @@ def index(request):
 
 
 def watchlist(request):
-    # Assuming you have a Watchlist model or similar logic to fetch watchlist items
-    # For now, we will just return a placeholder response
+    user_watchlist = Watchlist.objects.filter(user=request.user)
+    auctions = [item.auction for item in user_watchlist]
+   
     return render(request, "auctions/watchlist.html", {
-        "message": "Your Watchlist"
+        "watchlists": auctions,
+        "user": request.user
     })
 
+# it will add and remove the auction from the watchlist
+def toggle_watchlist(request, auction_id):
+    auction = get_object_or_404(Auctions, pk=auction_id)
+    watchlist_item, created = Watchlist.objects.get_or_create(user=request.user, auction=auction)
+
+    if not created:
+        watchlist_item.delete()
+    return redirect("details", auction_id=auction.id)
+
+# auction details view
 def details(request, auction_id):
     try:
         auction = Auctions.objects.get(id=auction_id)
@@ -28,10 +41,16 @@ def details(request, auction_id):
     except Auctions.DoesNotExist:
         return HttpResponse("Auction not found.", status=404)
 
+    in_watchlist = False
+    if request.user.is_authenticated:
+        in_watchlist = Watchlist.objects.filter(user=request.user, auction=auction).exists()
+        
     return render(request, "auctions/details.html", {
         "auction": auction,
-        "message": "Auction Details"
+        "in_watchlist": in_watchlist
     })
+
+
 
 def create(request):
 
