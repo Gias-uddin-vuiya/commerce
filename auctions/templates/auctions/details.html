@@ -11,6 +11,21 @@
             <p>Created by: {{ auction.creator.username }}</p>
             <p>Created on: {{ auction.created_at }}</p>
 
+            {% if user.is_authenticated %}
+                <form action="#" method="post">
+                    {% csrf_token %}
+                    {% if in_watchlist %}
+                        <button type="submit">Remove from Watchlist</button>
+                    {% else %}
+                        <button type="submit">Add to Watchlist</button>
+                    {% endif %}
+                </form>
+
+            {% else %}
+                <p><a href="{% url 'login' %}">Login</a> to manage your watchlist.</p>
+            {% endif %}
+
+            <br>
             <a href="{% url 'index' %}">Back to Listings</a>
         </div>
     {% else %}
