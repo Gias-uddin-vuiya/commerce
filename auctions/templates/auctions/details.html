@@ -10,6 +10,13 @@
             <p>Starting Bid: ${{ auction.starting_bid }}</p>
             <p>Created by: {{ auction.creator.username }}</p>
             <p>Created on: {{ auction.created_at }}</p>
+            <!-- Here we are showing user inputed bids We will work here later on -->
+            {% if highest_bid %}
+                <p>Current highest bid: ${{ highest_bid }}</p>
+            {% else %}
+                <p>No bids yet</p>
+            {% endif %}
+
 
             {% if user.is_authenticated %}
                 <form action="{% url 'toggle_watchlist' auction.id %}" method="post">
@@ -20,7 +27,13 @@
                         <button type="submit">Add to Watchlist</button>
                     {% endif %}
                 </form>
-
+                <!-- for now i am adding another form for bids -->
+                <form action="{% url 'details' auction.id %}" method="post">
+                    {% csrf_token %}
+                    <label for="bid">Place a Bid:</label>
+                    <input type="number" id="bid" name="bid" min="{{ highest_bid }}" step="0.01" required>
+                    <button type="submit">Submit Bid</button>
+                </form>
             {% else %}
                 <p><a href="{% url 'login' %}">Login</a> to manage your watchlist.</p>
             {% endif %}

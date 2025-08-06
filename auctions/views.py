@@ -4,8 +4,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
 
-from .models import User, Auctions, Watchlist
+from .models import User, Auctions, Watchlist, Bids
 
 
 def index(request):
@@ -35,19 +36,51 @@ def toggle_watchlist(request, auction_id):
 
 # auction details view
 def details(request, auction_id):
+    # Fetch the auction by ID
     try:
         auction = Auctions.objects.get(id=auction_id)
-       
+
     except Auctions.DoesNotExist:
         return HttpResponse("Auction not found.", status=404)
 
+    # Check if the auction is in the user's watchlist
     in_watchlist = False
     if request.user.is_authenticated:
         in_watchlist = Watchlist.objects.filter(user=request.user, auction=auction).exists()
+    
+    # Handle POST request for placing a bid -----------==========
+    if request.method == "POST":
+        if not request.user.is_authenticated:
+            return redirect("login")
         
+        bid_amount = request.POST.get("bid")
+        
+        try:
+            bid_amount = float(bid_amount)
+        except (ValueError, TypeError):
+            messages.error(request, "Invalid bid amount.")
+            return redirect("details", auction_id=auction_id)
+
+        # Get current highest bid
+        current_bid = Bids.objects.filter(auction=auction).order_by('-bid_amount').first()
+        min_bid = current_bid.bid_amount if current_bid else auction.starting_bid
+
+        if bid_amount <= min_bid:
+            messages.error(request, f"Your bid must be higher than the current bid (${min_bid}).")
+        else:
+            Bids.objects.create(user=request.user, auction=auction, bid_amount=bid_amount)
+            messages.success(request, "Your bid has been placed successfully.")
+
+        return redirect("details", auction_id=auction_id)
+    
+     # Get current highest bid (to show in template)
+    current_bid = Bids.objects.filter(auction=auction).order_by('-bid_amount').first()
+    highest_bid = current_bid.bid_amount if current_bid else None
+
     return render(request, "auctions/details.html", {
         "auction": auction,
-        "in_watchlist": in_watchlist
+        "in_watchlist": in_watchlist,
+        "highest_bid": highest_bid,
     })
 
 
