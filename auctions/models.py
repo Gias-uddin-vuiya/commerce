@@ -16,6 +16,10 @@ class Auctions(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="auctions")
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # NEW FIELDS
+    is_active = models.BooleanField(default=True)
+    winner = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name="won_auctions")
+
     def __str__(self):
         return self.title
       
