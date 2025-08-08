@@ -24,28 +24,43 @@
                 <p>No bids yet</p>
             {% endif %}
 
-           
-            
-
-
+                        
             {% if user.is_authenticated %}
-                <form action="{% url 'toggle_watchlist' auction.id %}" method="post">
-                    {% csrf_token %}
-                    {% if in_watchlist %}
-                        <button type="submit">Remove from Watchlist</button>
-                    {% else %}
-                        <button type="submit">Add to Watchlist</button>
-                    {% endif %}
-                </form>
-                <!-- for now i am adding another form for bids -->
-                <form action="{% url 'details' auction.id %}" method="post">
-                    {% csrf_token %}
-                    <label for="bid">Place a Bid:</label>
-                    <input type="number" id="bid" name="bid" step="0.01" >
-                    <button type="submit">Submit Bid</button>
-                </form>
+                <!--  Close Auction Button (only for creator) -->
+                {% if user == auction.creator and auction.is_active %}
+                    <form action="{% url 'close_auction' auction.id %}" method="post">
+                        {% csrf_token %}
+                        <!-- if close is not true then show the close button Otherwise show acative button -->
+                        <button type="submit">Close Auction</button>
+                    </form>
+                {% endif %}
+
+                <!-- Watchlist Toggle (only if not creator) -->
+                {% if user != auction.creator %}
+                    <form action="{% url 'toggle_watchlist' auction.id %}" method="post">
+                        {% csrf_token %}
+                        {% if in_watchlist %}
+                            <button type="submit">Remove from Watchlist</button>
+                        {% else %}
+                            <button type="submit">Add to Watchlist</button>
+                        {% endif %}
+                    </form>
+                {% endif %}
+
+                <!-- 💰 Bid Form (active auctions only) -->
+                {% if auction.is_active %}
+                    <form action="{% url 'details' auction.id %}" method="post">
+                        {% csrf_token %}
+                        <label for="bid">Place a Bid:</label>
+                        <input type="number" id="bid" name="bid" step="0.01" min="{{ min_bid }}" required>
+                        <button type="submit">Submit Bid</button>
+                    </form>
+                {% else %}
+                    <p>This auction is closed.</p>
+                {% endif %}
+
             {% else %}
-                <p><a href="{% url 'login' %}">Login</a> to manage your watchlist.</p>
+                <p><a href="{% url 'login' %}">Login</a> to manage your watchlist and place bids.</p>
             {% endif %}
 
             <br>

@@ -16,6 +16,7 @@ def index(request):
     })
 
 
+
 def watchlist(request):
     user_watchlist = Watchlist.objects.filter(user=request.user)
     auctions = [item.auction for item in user_watchlist]
@@ -84,7 +85,6 @@ def details(request, auction_id):
     })
 
 
-
 def create(request):
 
     if request.method == "POST":
@@ -119,6 +119,21 @@ def create(request):
         "message": "Create Auction"
     })
 
+def close_auction(request, auction_id):
+    auction = get_object_or_404(Auctions, pk=auction_id)
+
+    if request.method == "POST":
+        if request.user == auction.creator and auction.is_active:
+            # Find highest bid and set winner (if you have a Bids model)
+            highest_bid = auction.bids_set.order_by('-bid_amount').first()
+            if highest_bid:
+                auction.winner = highest_bid.user
+            auction.is_active = False
+            auction.save()
+            messages.success(request, "Auction closed successfully.")
+        else:
+            messages.error(request, "You cannot close this auction.")
+    return redirect("details", auction_id=auction.id)
 
 def login_view(request):
     if request.method == "POST":
