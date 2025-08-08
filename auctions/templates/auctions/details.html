@@ -76,6 +76,24 @@
                 <p><a href="{% url 'login' %}">Login</a> to manage your watchlist and place bids.</p>
             {% endif %}
 
+            <!-- Comments Section -->
+            <h4>Comments</h4>
+            <form action="{% url 'add_comment' auction.id %}" method="post">
+                {% csrf_token %}
+                <textarea name="content" rows="3" cols="50" placeholder="Add a comment..." ></textarea>
+                <button type="submit">Post Comment</button>
+            </form>
+
+            <ul class="comments-list">
+                {% for comment in auction.comments.all %}
+                    <li>
+                        <strong>{{ comment.user.username }}</strong> ({{ comment.created_at|date:"Y-m-d H:i" }}):
+                        {{ comment.content }}
+                    </li>
+                {% empty %}
+                    <li>No comments yet.</li>
+                {% endfor %}
+           
             <br>
             <a href="{% url 'index' %}">Back to Listings</a>
         </div>

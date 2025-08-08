@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 
-from .models import User, Auctions, Watchlist, Bids
+from .models import User, Auctions, Watchlist, Bids, Comment
 
 
 def index(request):
@@ -134,6 +134,26 @@ def close_auction(request, auction_id):
         else:
             messages.error(request, "You cannot close this auction.")
     return redirect("details", auction_id=auction.id)
+
+
+# comment functionality
+def add_comment(request, auction_id):
+    if request.method == "POST":
+        content = request.POST.get("content")
+        auction = get_object_or_404(Auctions, pk=auction_id)
+
+        if not request.user.is_authenticated:
+            messages.error(request, "You must be logged in to comment.")
+            return redirect("login")
+
+        if content:
+            Comment.objects.create(auction=auction, user=request.user, content=content)
+            messages.success(request, "Comment added successfully.")
+        else:
+            messages.error(request, "Comment cannot be empty.")
+
+    return redirect("details", auction_id=auction_id)
+
 
 def login_view(request):
     if request.method == "POST":

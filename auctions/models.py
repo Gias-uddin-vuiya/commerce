@@ -41,8 +41,8 @@ class Bids(models.Model):
         return f"{self.user.username} - {self.auction.title} - ${self.bid_amount}"
     
 class Comment(models.Model):
-    auction = models.ForeignKey(Auctions, on_delete=models.CASCADE, related_name="comments"),
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments"),
+    auction = models.ForeignKey(Auctions, on_delete=models.CASCADE, null=True, related_name="comments")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="comments")
     content = models.TextField(max_length=520)
     created_at = models.DateTimeField(auto_now_add=True)
 
