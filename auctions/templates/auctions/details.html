@@ -24,6 +24,21 @@
                 <p>No bids yet</p>
             {% endif %}
 
+
+            <!-- Show the winner of acution -->
+             {% if not auction.is_active %}
+                <p>This auction is closed.</p>
+                {% if auction.winner %}
+                    {% if user.is_authenticated and user == auction.winner %}
+                        <p>🎉 Congratulations! You won this auction.</p>
+                    {% else %}
+                        <p>🏆 Winner: {{ auction.winner.username }}</p>
+                    {% endif %}
+                {% else %}
+                    <p>No winner — no bids were placed.</p>
+                {% endif %}
+            {% endif %}
+
                         
             {% if user.is_authenticated %}
                 <!--  Close Auction Button (only for creator) -->
@@ -55,8 +70,6 @@
                         <input type="number" id="bid" name="bid" step="0.01" min="{{ min_bid }}" required>
                         <button type="submit">Submit Bid</button>
                     </form>
-                {% else %}
-                    <p>This auction is closed.</p>
                 {% endif %}
 
             {% else %}
