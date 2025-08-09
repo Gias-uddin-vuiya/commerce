@@ -91,6 +91,15 @@ def categories(request):
         "categories": categories
     })
 
+def category_details(request, category_id):
+    category = get_object_or_404(Category, pk=category_id)
+    auctions = Auctions.objects.filter(category=category)
+
+    return render(request, "auctions/category-details.html", {
+        "category": category,
+        "auctions": auctions
+    })
+
 # Create a new auction
 def create(request):
 
