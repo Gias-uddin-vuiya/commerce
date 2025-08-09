@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 
-from .models import User, Auctions, Watchlist, Bids, Comment
+from .models import User, Auctions, Watchlist, Bids, Comment, Category
 
 
 def index(request):
@@ -84,7 +84,13 @@ def details(request, auction_id):
         "highest_bid": highest_bid,
     })
 
+def categories(request):
+    categories = Category.objects.all()
+    return render(request, "auctions/categories.html", {
+        "categories": categories
+    })
 
+# Create a new auction
 def create(request):
 
     if request.method == "POST":
@@ -92,7 +98,7 @@ def create(request):
         description = request.POST["description"]
         starting_bid = request.POST["starting_bid"]
         image_url = request.POST.get("image_url", "")
-        category = request.POST.get("category", "")
+        # category = request.POST.get("category", "")
 
         # Create a new auction
         auction = Auctions(
@@ -100,7 +106,7 @@ def create(request):
             description=description,
             starting_bid=starting_bid,
             image_url=image_url,
-            category=category,
+            # category=category,
             creator=request.user
         )
         # Save the auction to the database
