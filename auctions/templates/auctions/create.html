@@ -24,9 +24,9 @@
         <div class="form-group">
             <select class="form-control" name="category">
                 <option value="" disabled selected>Select a Category</option>
-                <!-- {% for category in categories %}
-                    <option value="{{ category }}">{{ category }}</option>
-                {% endfor %} -->
+                {% for category in categories %}
+                    <option value="">{{ category.name }}</option>
+                {% endfor %}
             </select>       
         </div>
         <input class="btn btn-primary" type="submit" value="Create Auction">

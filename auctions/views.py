@@ -86,6 +86,7 @@ def details(request, auction_id):
 
 def categories(request):
     categories = Category.objects.all()
+
     return render(request, "auctions/categories.html", {
         "categories": categories
     })
@@ -93,12 +94,14 @@ def categories(request):
 # Create a new auction
 def create(request):
 
+    categories = Category.objects.all()
+    
     if request.method == "POST":
         title = request.POST["title"]
         description = request.POST["description"]
         starting_bid = request.POST["starting_bid"]
         image_url = request.POST.get("image_url", "")
-        # category = request.POST.get("category", "")
+        
 
         # Create a new auction
         auction = Auctions(
@@ -106,7 +109,6 @@ def create(request):
             description=description,
             starting_bid=starting_bid,
             image_url=image_url,
-            # category=category,
             creator=request.user
         )
         # Save the auction to the database
@@ -122,6 +124,7 @@ def create(request):
             })
 
     return render(request, "auctions/create.html", {
+        "categories" : categories,
         "message": "Create Auction"
     })
 

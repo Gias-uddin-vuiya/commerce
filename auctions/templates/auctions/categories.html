@@ -3,5 +3,15 @@
 
 {% block body %}
     <h2>Category: </h2>
-    
+    <ul>
+        {% for category in categories %}
+            <li>
+                <a href="#">{{ category.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% if not categories %}
+        <p>No categories available.</p>
+    {% endif %}
+    <a href="{% url 'create' %}" class="btn btn-primary">Create Auction</a>     
 {% endblock %}
