@@ -100,9 +100,8 @@ def category_details(request, category_id):
         "auctions": auctions
     })
 
-# Create a new auction
-def create(request):
 
+def create(request):
     categories = Category.objects.all()
     
     if request.method == "POST":
@@ -110,30 +109,36 @@ def create(request):
         description = request.POST["description"]
         starting_bid = request.POST["starting_bid"]
         image_url = request.POST.get("image_url", "")
-        
+        category_id = request.POST.get("category", "")
 
-        # Create a new auction
+        # Convert empty string to None, else get Category instance
+        if category_id == "":
+            category = None
+        else:
+            category = Category.objects.get(pk=category_id)
+
+        # Create a new auction with category
         auction = Auctions(
             title=title,
             description=description,
             starting_bid=starting_bid,
             image_url=image_url,
-            creator=request.user
+            creator=request.user,
+            category=category
         )
-        # Save the auction to the database
         auction.save()
         
         if auction.id:
-            return HttpResponseRedirect(reverse("index"), {
-                "message": "Auction created successfully!"})
-        # Redirect to the index page after creating the auction 
+            return redirect("index")  # You can add a success message with Django messages framework if you want
+        
         else:
-           return render(request, "auctions/create.html", {
-                "message": "Error creating auction. Please try again."
+            return render(request, "auctions/create.html", {
+                "message": "Error creating auction. Please try again.",
+                "categories": categories
             })
 
     return render(request, "auctions/create.html", {
-        "categories" : categories,
+        "categories": categories,
         "message": "Create Auction"
     })
 

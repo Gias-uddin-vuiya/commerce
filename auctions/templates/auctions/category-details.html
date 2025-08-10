@@ -2,16 +2,18 @@
 
 {% block body %}
     <h2>Category: {{ category.name }}</h2>
-    <ul>
-        {% for auction in auctions %}
-            <li>
-                <a href="{% url 'details' auction.id %}">{{ auction.title }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-    {% if not auctions %}
-        <p>No auctions available in this category.</p>
-    {% endif %}
+    
+    {% for auction in auctions %}
+        <div class="auction-item">
+            <h3>{{ auction.title }}</h3>
+            <img src="{{auction.image_url}}" width="300px" alt="images is not found">
+            <p>{{ auction.description }}</p>
+            <p>Current Bid: ${{ auction.starting_bid }}</p>
+            <a href="{% url 'details' auction.id %}">View Details</a>
+        </div>
+    {% empty %}
+        <p>No active listings available.</p>
+    {% endfor %}
     <a href="{% url 'create' %}" class="btn btn-primary">Create Auction</a>
     
 {% endblock %}
