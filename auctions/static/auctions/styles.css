@@ -14,8 +14,14 @@ body {
 
 .navbar-brand {
     font-family: auto;
-    font-size: 22px;
+    font-size: 26px;
     letter-spacing: 5px;
+}
+
+.active-list {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
 }
 
 .card {
@@ -49,6 +55,9 @@ body {
     color: #666;
 }
 
+.bids-and-watchlist-count small {
+    font-size: medium;
+}
 .card-text {
     font-size: 15px;
     color: #555;

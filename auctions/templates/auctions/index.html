@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-<h2 class="mb-4">Active Listings</h2>
+<h2 class="mb-4 active-list">Active Listings</h2>
 
 <div class="row">
     {% for auction in auctions %}
@@ -14,17 +14,29 @@
                 <!-- Card Body -->
                 <div class="card-body d-flex flex-column justify-content-between">
                     <!-- Title -->
-                    <h4 class="card-title mb-2">{{ auction.title }}</h4>
+                    <h4 class="card-title mb-2">{{ auction.title|truncatechars:40 }}</h4>
                     
                     <!-- Description -->
-                    <p class="card-text mb-3">{{ auction.description|truncatechars:40 }}</p>
+                    <p class="card-text mb-3">{{ auction.description|truncatechars:50 }}</p>
                     
                     <!-- Auction Info -->
                     <div class="mb-3">
                         <span class="current-bids mb-1"> ${{ auction.starting_bid }}</span>
                         <div class="bids-and-watchlist-count">
-                            <small class="text-secondary me-3">📈 Bids: {{ auction.bids.count }}</small>
-                            <small class="text-secondary">⭐ Watchlist: {{ auction.watchlist.count }}</small>
+                            <small class="text-secondary me-3">
+                                {% if auction.bids.count > 0 %}
+                                    <span class="text-success"><i class="fa-solid fa-chart-simple"></i> Bids: {{ auction.bids.count }}</span>
+                                {% else %}
+                                     <span title="Bids"><i class="fa-solid fa-chart-simple"></i> 0</span>
+                                {% endif %} 
+                            </small>
+                            <small class="text-secondary">
+                                {% if auction.watchlists.count > 0 %}
+                                    <span class="text-success"><i class="fa-solid fa-bookmark"></i> {{ auction.watchlists.count }}</span>
+                                {% else %}
+                                    <span title="watchlist"><i class="fa-solid fa-bookmark"></i> 0</span>
+                                {% endif %}
+                            </small>
                         </div>
                     </div>
 
