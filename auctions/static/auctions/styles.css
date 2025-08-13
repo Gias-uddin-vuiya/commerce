@@ -28,13 +28,13 @@ body {
   overflow: hidden; /* prevents image from going outside */
 }
 
-.card img {
+.card img, .auction-item .left-side img {
   transition: transform 0.3s ease-in-out; /* smooth zoom */
   display: block; /* removes bottom gap for inline images */
-  width: 100%; /* ensures it fits container */
+   /* ensures it fits container */
 }
 
-.card img:hover {
+.card img:hover, .auction-item .left-side img:hover {
   transform: scale(1.1); /* zoom in */
 }
 
@@ -62,3 +62,56 @@ body {
     font-size: 15px;
     color: #555;
 }
+
+/* Now work on auction details page */
+
+.auction-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.line {
+    margin: 20px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.auction-item .right-side .bids{
+    font-weight: bold;
+    color: #333;
+    font-size: 1.2em;
+}
+
+.auction-item .left-side img {
+    border-radius: 5px;
+}
+
+
+.right-side form input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    outline: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.right-side form input:focus {
+    border-color: #28a745;
+}
+
+.right-side form button {
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+   
+}
+
+.right-side form button:hover {
+    background-color: #218838;
+}
+

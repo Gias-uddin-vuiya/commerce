@@ -1,11 +1,41 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Auctions Details</h2>
+    <!-- <h3>Auctions Details</h3> -->
     {% if auction %}
         <div class="auction-item">
-            <h3>{{ auction.title }}</h3>
-            <img src="{{ auction.image_url }}" width="300px" alt="Image not found">
+            <!-- Display auction details -->
+            <div class="auction-details">
+                <div class="left-side">
+                    <img src="{{ auction.image_url }}" width="300px" alt="Image not found">
+                </div>
+                <div class="right-side">
+                    <h4>{{ auction.title }}</h4>
+                    <div class="line"></div>
+                    <p>{{ auction.description }}</p>
+                    <p>Current Price: <span class="bids">${{ auction.starting_bid }}</span></p>
+                    {% if highest_bid %}
+                        <p>Minimum Bid: <span class="bids">${{ highest_bid }}</span></p>
+                    {% else %}
+                        <p>No bids yet</p>
+                    {% endif %}
+
+                    <!-- 💰 Bid Form (active auctions only) -->
+                    {% if user.is_authenticated %}
+                        {% if auction.is_active %}
+                        <form action="{% url 'details' auction.id %}" method="post">
+                            {% csrf_token %}
+                            <label for="bid">Set Your Maximum Bid:</label>
+                            <input type="number" id="bid" name="bid" step="0.01" min="{{ min_bid }}" required>
+                            <button type="submit">Submit Bid</button>
+                        </form>
+                        {% endif %}
+                    {% endif %} 
+                </div>
+            </div>
+            <div class="line"></div>
+            <h4>{{ auction.title }}</h4>
+            
             <p>{{ auction.description }}</p>
             <p>Starting Bid: ${{ auction.starting_bid }}</p>
             <p>Created by: {{ auction.creator.username }}</p>
