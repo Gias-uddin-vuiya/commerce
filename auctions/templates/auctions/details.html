@@ -22,37 +22,119 @@
 
                     <!-- 💰 Bid Form (active auctions only) -->
                     {% if user.is_authenticated %}
+                    <div class="button-group">
                         {% if auction.is_active %}
                         <form action="{% url 'details' auction.id %}" method="post">
                             {% csrf_token %}
                             <label for="bid">Set Your Maximum Bid:</label>
                             <input type="number" id="bid" name="bid" step="0.01" min="{{ min_bid }}" required>
-                            <button type="submit">Submit Bid</button>
+                            <button type="submit" class="btn btn-bid">Bid</button>
                         </form>
                         {% endif %}
-                    {% endif %} 
+
+                        <!--  Close Auction Button (only for creator) -->
+                        {% if user == auction.creator and auction.is_active %}
+                            <form action="{% url 'close_auction' auction.id %}" method="post">
+                                {% csrf_token %}
+                                <!-- if close is not true then show the close button Otherwise show acative button -->
+                                <button type="submit" class="btn btn-close">Close</button>
+                            </form>
+                        {% endif %}
+
+                        <!-- Watchlist Toggle (only if not creator) -->
+                        {% if user != auction.creator %}
+                            <form action="{% url 'toggle_watchlist' auction.id %}" method="post">
+                                {% csrf_token %}
+                                {% if in_watchlist %}
+                                    <button type="submit" class="btn btn-remove">Remove</button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-add">Add</button>
+                                {% endif %}
+                            </form>
+                        {% endif %}
+                        </div>
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p class="message {{ message.tags }}">{{ message }}</p>
+                            {% endfor %}
+                        {% endif %}
+                     {% else %}
+                        <p><a href="{% url 'login' %}">Login</a> to manage your watchlist and place bids.</p>
+                    {% endif %}
                 </div>
             </div>
             <div class="line"></div>
+
+<!-- Nav Tabs -->
+<ul class="nav nav-tabs" id="auctionTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
+      Comments
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link " id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">
+      Details Info
+    </button>
+  </li>
+</ul>
+
+
+<div class="tab-content p-3 border border-top-0 rounded-bottom" id="auctionTabContent">
+  <!-- comment section-->
+        <!-- comment section -->
+    <div class="tab-pane fade show active" id="details" role="tabpanel">
+        {% if user.is_authenticated %}
+            <div class="comments-section">
+                <h4 class="comments-title">Comments</h4>
+                <form action="{% url 'add_comment' auction.id %}" method="post" class="comment-form">
+                    {% csrf_token %}
+                    <textarea name="content" rows="3" placeholder="Add a comment..." required></textarea>
+                    <button type="submit" class="btn btn-post">Post Comment</button>
+                </form>
+
+                <ul class="comments-list">
+                    {% for comment in auction.comments.all %}
+                        <li class="comment-item">
+                            <strong class="comment-user">{{ comment.user.username }}</strong>
+                            <span class="comment-date">({{ comment.created_at|date:"Y-m-d H:i" }})</span>
+                            <p class="comment-text">{{ comment.content }}</p>
+                        </li>
+                    {% empty %}
+                        <li class="no-comments">No comments yet.</li>
+                    {% endfor %}
+                </ul>
+
+                <a href="{% url 'index' %}" class="btn btn-back">← Back to Listings</a>
+            </div>
+       
+    </div>
+  <!-- Details Info -->
+  <div class="tab-pane fade show " id="info" role="tabpanel">
             <h4>{{ auction.title }}</h4>
-            
             <p>{{ auction.description }}</p>
             <p>Starting Bid: ${{ auction.starting_bid }}</p>
             <p>Created by: {{ auction.creator.username }}</p>
             <p>Created on: {{ auction.created_at }}</p>
-
-            <!-- Here we are showing user inputed bids We will work here later on -->
-           {% if messages %}
-                {% for message in messages %}
-                    <p class="message {{ message.tags }}">{{ message }}</p>
-                {% endfor %}
-            {% endif %}
             <!-- add higher bids -->
             {% if highest_bid %}
                 <p>Current highest bid: ${{ highest_bid }}</p>
             {% else %}
                 <p>No bids yet</p>
             {% endif %}
+  </div>
+
+
+
+    {% else %}
+        <p>No details available for this auction.</p>
+    {% endif %}
+
+  </div>
+</div>
+
+
+
 
 
             <!-- Show the winner of acution -->
@@ -69,63 +151,6 @@
                 {% endif %}
             {% endif %}
 
-                        
-            {% if user.is_authenticated %}
-                <!--  Close Auction Button (only for creator) -->
-                {% if user == auction.creator and auction.is_active %}
-                    <form action="{% url 'close_auction' auction.id %}" method="post">
-                        {% csrf_token %}
-                        <!-- if close is not true then show the close button Otherwise show acative button -->
-                        <button type="submit">Close Auction</button>
-                    </form>
-                {% endif %}
-
-                <!-- Watchlist Toggle (only if not creator) -->
-                {% if user != auction.creator %}
-                    <form action="{% url 'toggle_watchlist' auction.id %}" method="post">
-                        {% csrf_token %}
-                        {% if in_watchlist %}
-                            <button type="submit">Remove from Watchlist</button>
-                        {% else %}
-                            <button type="submit">Add to Watchlist</button>
-                        {% endif %}
-                    </form>
-                {% endif %}
-
-                <!-- 💰 Bid Form (active auctions only) -->
-                {% if auction.is_active %}
-                    <form action="{% url 'details' auction.id %}" method="post">
-                        {% csrf_token %}
-                        <label for="bid">Place a Bid:</label>
-                        <input type="number" id="bid" name="bid" step="0.01" min="{{ min_bid }}" required>
-                        <button type="submit">Submit Bid</button>
-                    </form>
-                {% endif %}
-
-            {% else %}
-                <p><a href="{% url 'login' %}">Login</a> to manage your watchlist and place bids.</p>
-            {% endif %}
-
-            <!-- Comments Section -->
-            <h4>Comments</h4>
-            <form action="{% url 'add_comment' auction.id %}" method="post">
-                {% csrf_token %}
-                <textarea name="content" rows="3" cols="50" placeholder="Add a comment..." ></textarea>
-                <button type="submit">Post Comment</button>
-            </form>
-
-            <ul class="comments-list">
-                {% for comment in auction.comments.all %}
-                    <li>
-                        <strong>{{ comment.user.username }}</strong> ({{ comment.created_at|date:"Y-m-d H:i" }}):
-                        {{ comment.content }}
-                    </li>
-                {% empty %}
-                    <li>No comments yet.</li>
-                {% endfor %}
-           
-            <br>
-            <a href="{% url 'index' %}">Back to Listings</a>
         </div>
     {% else %}
         <p>No details available for this auction.</p>
