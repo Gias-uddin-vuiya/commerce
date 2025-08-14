@@ -4,13 +4,20 @@
     <h2>Category: {{ category.name }}</h2>
     
     {% for auction in auctions %}
-        <div class="auction-item">
+      {% if auction.is_active %}
+          <div class="auction-item">
             <h3>{{ auction.title }}</h3>
             <img src="{{auction.image_url}}" width="300px" alt="images is not found">
             <p>{{ auction.description }}</p>
             <p>Current Bid: ${{ auction.starting_bid }}</p>
             <a href="{% url 'details' auction.id %}">View Details</a>
         </div>
+        {% else %}
+            <div class="auction-item">
+                <p>This auction is no longer active.</p>
+            </div>
+        {% endif %}
+
     {% empty %}
         <p>No active listings available.</p>
     {% endfor %}
