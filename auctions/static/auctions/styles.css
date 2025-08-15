@@ -254,3 +254,30 @@ body {
     color: #666;
     font-style: italic;
 }
+
+/* add desing to close page */
+.image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.image-container img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: grayscale(50%); /* 0% = normal, 100% = fully gray */
+}
+
+
+.close-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px 12px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+}
