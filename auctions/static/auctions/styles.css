@@ -35,13 +35,13 @@ body {
   overflow: hidden; 
 }
 
-.card img, .auction-item .left-side img {
+.card img, .auction-item .left-side img, .category_image {
   transition: transform 0.3s ease-in-out; 
   display: block; 
 
 }
 
-.card img:hover, .auction-item .left-side img:hover {
+.card img:hover, .auction-item .left-side img:hover, .category_image:hover {
   transform: scale(1.1); 
 }
 
@@ -292,7 +292,3 @@ body {
     border-radius: 50%;
 }
 
-.category_image img:hover {
-    transform: scale(1.05);
-    transition: transform 0.3s ease-in-out;
-}
