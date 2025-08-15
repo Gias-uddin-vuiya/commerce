@@ -3,13 +3,16 @@
 
 {% block body %}
     <h2>Category: </h2>
-    <ul>
+ 
         {% for category in categories %}
-            <li>
-                <a href="{% url 'category_details' category.id %}">{{ category.name }}</a>
-            </li>
+        <div class="image-container category_image">
+            <a href="{% url 'category_details' category.id %}">
+                <img src="{{ category.category_image }}" alt="">
+                <span class="category-name close-text">{{ category.name }}</span>
+            </a>
+        </div>
         {% endfor %}
-    </ul>
+    
     {% if not categories %}
         <p>No categories available.</p>
     {% endif %}

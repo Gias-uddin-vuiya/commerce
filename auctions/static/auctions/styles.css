@@ -282,3 +282,17 @@ body {
     font-weight: bold;
     border-radius: 5px;
 }
+
+
+/* add css to categories page */
+.category_image img {
+    width: 250px;
+    height: 250px;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.category_image img:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease-in-out;
+}
