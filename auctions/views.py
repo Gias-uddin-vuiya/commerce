@@ -31,10 +31,13 @@ def watchlist(request):
         total_watchlist_count=Count('watchlist_items', distinct=True),
         total_bids_count=Count('bids', distinct=True)
     )
+
+    total_watchlist = user_watchlist.count()
     
     return render(request, "auctions/watchlist.html", {
         "auctions": auctions,
-        "user": request.user
+        "user": request.user,
+        "total_watchlist": total_watchlist
     })
 
 # it will add and remove the auction from the watchlist

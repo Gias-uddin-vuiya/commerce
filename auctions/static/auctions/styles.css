@@ -292,3 +292,8 @@ body {
     border-radius: 50%;
 }
 
+/* message badge design */
+.badge {
+    background-color: red;
+    color: white;
+}
