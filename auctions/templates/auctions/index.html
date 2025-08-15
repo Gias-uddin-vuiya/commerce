@@ -5,7 +5,8 @@
 
 <div class="row">
     {% for auction in auctions %}
-        <div class="col-md-4 mb-4">
+        {% if auction.is_active %}
+            <div class="col-md-4 mb-4">
             <div class="card h-100 shadow-sm border-0">
                 <!-- Auction Image -->
                 <a href="{% url 'details' auction.id %}">
@@ -43,6 +44,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
     {% empty %}
         <p class="text-muted">No active listings available.</p>
     {% endfor %}
