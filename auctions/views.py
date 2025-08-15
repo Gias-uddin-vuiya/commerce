@@ -27,7 +27,11 @@ def index(request):
 def watchlist(request):
     user_watchlist = Watchlist.objects.filter(user=request.user)
     auctions = [item.auction for item in user_watchlist]
-   
+    auctions = Auctions.objects.filter(id__in=[auction.id for auction in auctions]).annotate(
+        total_watchlist_count=Count('watchlist_items', distinct=True),
+        total_bids_count=Count('bids', distinct=True)
+    )
+    
     return render(request, "auctions/watchlist.html", {
         "auctions": auctions,
         "user": request.user
