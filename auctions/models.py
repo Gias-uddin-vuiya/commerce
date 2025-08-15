@@ -9,6 +9,7 @@ class User(AbstractUser):
 
 class Category(models.Model):
     name = models.CharField(max_length=64, unique=True)
+    category_image = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.name
