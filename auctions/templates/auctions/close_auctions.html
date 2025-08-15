@@ -1,0 +1,22 @@
+{% extends 'auctions/layout.html' %}
+
+
+{% block body %}
+    <h2>Close Auctions</h2>
+
+    {% if auctions %}
+    {% for auction in auctions %}
+        <div class="auction-item">
+            <h3>{{ auction.title }}</h3>
+            <img src="{{ auction.image_url }}" width="300px" alt="Image not found">
+            <p>{{ auction.description }}</p>
+            <p>Final Price: ${{ auction.starting_bid }}</p>
+            <a href="{% url 'details' auction.id %}">View Details</a>
+        </div>
+    {% endfor %}
+    {% else %}
+    <p>No closed auctions found.</p>
+    {% endif %}
+
+
+{% endblock %}

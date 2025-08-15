@@ -156,8 +156,21 @@ def close_auction(request, auction_id):
             messages.success(request, "Auction closed successfully.")
         else:
             messages.error(request, "You cannot close this auction.")
-    return redirect("details", auction_id=auction.id)
+    # return redirect("details", auction_id=auction.id)
+    return render(request, "auctions/close_auction.html", {
+        "auction": auction
+        })
 
+def close_auctions(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to view closed auctions.")
+        return redirect("login")
+
+    closed_auctions = Auctions.objects.filter(is_active=False, creator=request.user)
+
+    return render(request, "auctions/close_auctions.html", {
+        "auctions": closed_auctions
+    })
 
 # comment functionality
 def add_comment(request, auction_id):
