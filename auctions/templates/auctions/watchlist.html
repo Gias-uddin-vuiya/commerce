@@ -3,21 +3,48 @@
 {% block body %}
     <h2>Watchlist</h2>
 
-    {% if watchlists %}
-        <ul>
-            {% for watchlist in watchlists %}
-            <div class="auction-item">
-                <h3>{{ watchlist.title }}</h3>
-                <img src="{{watchlist.image_url}}" width="300px" alt="images is not found">
-                <p>{{ watchlist.description }}</p>
-                <p>Current Bid: ${{ watchlist.starting_bid }}</p>
-                <a href="{% url 'details' watchlist.id %}">View Details</a>
+   <div class="row">
+    {% for auction in auctions %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <!-- Auction Image -->
+                <a href="{% url 'details' auction.id %}">
+                    <img src="{{ auction.image_url }}" class="card-img-top" alt="Image not found" style="height: 200px; object-fit: cover;">
+                </a>
+                <!-- Card Body -->
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <!-- Title -->
+                    <h4 class="card-title mb-2">{{ auction.title|truncatechars:40 }}</h4>
+                    
+                    <!-- Description -->
+                    <p class="card-text mb-3">{{ auction.description|truncatechars:50 }}</p>
+                    
+                    <!-- Auction Info -->
+                    <div class="mb-3">
+                        <span class="current-bids mb-1"> ${{ auction.starting_bid }}</span>
+                        <div class="bids-and-watchlist-count">
+                            <small class="text-secondary me-3">
+                                {% if auction.bids.count > 0 %}
+                                    <span class="text-success"><i class="fa-solid fa-chart-simple"></i> Bids: {{ auction.bids.count }}</span>
+                                {% else %}
+                                     <span title="Bids"><i class="fa-solid fa-chart-simple"></i> 0</span>
+                                {% endif %} 
+                            </small>
+                            <small class="text-secondary">
+                                {% if auction.watchlists.count > 0 %}
+                                    <span class="text-success"><i class="fa-solid fa-bookmark"></i> {{ auction.watchlists.count }}</span>
+                                {% else %}
+                                    <span title="watchlist"><i class="fa-solid fa-bookmark"></i> 0</span>
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-            {% empty %}
-                <p>No items in your watchlist.</p>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Your watchlist is empty.</p>
-    {% endif %}
+        </div>
+    {% empty %}
+        <p class="text-muted">No available Watchlist.</p>
+    {% endfor %}
+</div>
 {% endblock %}

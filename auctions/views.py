@@ -22,7 +22,7 @@ def watchlist(request):
     auctions = [item.auction for item in user_watchlist]
    
     return render(request, "auctions/watchlist.html", {
-        "watchlists": auctions,
+        "auctions": auctions,
         "user": request.user
     })
 
