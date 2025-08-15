@@ -6,9 +6,16 @@
         <div class="auction-item">
             <!-- Display auction details -->
             <div class="auction-details">
-                <div class="left-side">
-                    <img src="{{ auction.image_url }}" width="300px" alt="Image not found">
-                </div>
+                {% if not auction.is_active %}
+                    <div class="left-side image-container">
+                        <img src="{{ auction.image_url }}" class="card-img-top" alt="Image not found" style="height: 200px; object-fit: cover;">
+                        <span class="close-text">Close</span>
+                    </div>
+                {% else %}
+                    <div class="left-side">
+                        <img src="{{ auction.image_url }}" width="300px" alt="Image not found">
+                    </div>
+                {% endif %}
                 <div class="right-side">
                     <h4>{{ auction.title }}</h4>
                     <div class="line"></div>

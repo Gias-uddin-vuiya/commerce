@@ -83,6 +83,7 @@ body {
     border-bottom: 1px solid #ddd;
 }
 
+
 .auction-item .right-side .bids {
     font-weight: bold;
     color: #495057;
@@ -263,9 +264,9 @@ body {
 
 .image-container img {
     display: block;
-    width: 100%;
+    /* width: 100%; */
     height: auto;
-    filter: grayscale(50%); /* 0% = normal, 100% = fully gray */
+    filter: grayscale(60%); /* 0% = normal, 100% = fully gray */
 }
 
 
