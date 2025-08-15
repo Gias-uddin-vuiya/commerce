@@ -5,14 +5,21 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
+from django.db.models import Count
 
 from .models import User, Auctions, Watchlist, Bids, Comment, Category
 
 
 def index(request):
-    auction = Auctions.objects.all()
+    # auction = Auctions.objects.all()
+
+    auctions = Auctions.objects.annotate(
+        total_watchlist_count=Count('watchlist_items', distinct=True),
+        total_bids_count=Count('bids', distinct=True)
+    )
+
     return render(request, "auctions/index.html", {
-        "auctions": auction,
+        "auctions": auctions,
     })
 
 
@@ -40,6 +47,12 @@ def details(request, auction_id):
     # Fetch the auction by ID
     try:
         auction = Auctions.objects.get(id=auction_id)
+       
+        # User-specific watchlist count (only if authenticated)
+        user_watchlist_count = request.user.watchlist.count() if request.user.is_authenticated else 0
+
+        # Total number of people who watchlisted THIS auction
+        total_watchlist_count = Watchlist.objects.filter(auction=auction).count()
 
     except Auctions.DoesNotExist:
         return HttpResponse("Auction not found.", status=404)
@@ -78,10 +91,14 @@ def details(request, auction_id):
     current_bid = Bids.objects.filter(auction=auction).order_by('-bid_amount').first()
     highest_bid = current_bid.bid_amount if current_bid else None
 
+    
+
     return render(request, "auctions/details.html", {
         "auction": auction,
         "in_watchlist": in_watchlist,
         "highest_bid": highest_bid,
+        "user_watchlist_count": user_watchlist_count,
+        "total_watchlist_count": total_watchlist_count,
     })
 
 def categories(request):

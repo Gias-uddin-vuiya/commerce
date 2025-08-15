@@ -24,19 +24,11 @@
                     <div class="mb-3">
                         <span class="current-bids mb-1"> ${{ auction.starting_bid }}</span>
                         <div class="bids-and-watchlist-count">
-                            <small class="text-secondary me-3">
-                                {% if auction.bids.count > 0 %}
-                                    <span class="text-success"><i class="fa-solid fa-chart-simple"></i> Bids: {{ auction.bids.count }}</span>
-                                {% else %}
-                                     <span title="Bids"><i class="fa-solid fa-chart-simple"></i> 0</span>
-                                {% endif %} 
+                            <small class="text-secondary me-3"> 
+                                <span title="Bids"><i class="fa-solid fa-chart-simple"></i> {{ auction.total_bids_count }}</span>
                             </small>
                             <small class="text-secondary">
-                                {% if auction.watchlists.count > 0 %}
-                                    <span class="text-success"><i class="fa-solid fa-bookmark"></i> {{ auction.watchlists.count }}</span>
-                                {% else %}
-                                    <span title="watchlist"><i class="fa-solid fa-bookmark"></i> 0</span>
-                                {% endif %}
+                                <span class="text-secondary"><i class="fa-solid fa-bookmark"></i> {{ auction.total_watchlist_count }}</span>
                             </small>
                         </div>
                     </div>
