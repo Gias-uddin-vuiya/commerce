@@ -22,7 +22,21 @@ def index(request):
         "auctions": auctions,
     })
 
-
+def my_listing(request):
+    if not request.user.is_authenticated:
+        messages.error(request, "You must be logged in to view your listings.")
+        return redirect("login")
+    # Fetch auctions created by the logged-in user
+    auctions = Auctions.objects.filter(creator=request.user).annotate(
+        total_watchlist_count=Count('watchlist_items', distinct=True),
+        total_bids_count=Count('bids', distinct=True)  
+    )
+    if not auctions:
+        messages.info(request, "You have no active listings.")
+    return render(request, "auctions/my-listing.html", {
+        "auctions": auctions,
+        "user": request.user
+    })
 
 def watchlist(request):
     user_watchlist = Watchlist.objects.filter(user=request.user)
