@@ -3,6 +3,10 @@
 {% block body %}
 
 <div class="row">
+    <div class="col-12 mb-4">
+        <p class="categorie-name">Category: {{ category.name }}</p>
+    </div>
+
     {% for auction in auctions %}
         {% if auction.is_active %}
             <div class="col-md-4 mb-4">
@@ -48,6 +52,7 @@
         <p class="text-muted">No active listings available.</p>
     {% endfor %}
 </div>
-    <a href="{% url 'create' %}" class="btn btn-primary">Create Auction</a>
-    
+    <div class="mt-4">
+        <a href="{% url 'categories' %}" class="btn btn-secondary">Back to Categories</a>
+    </div>
 {% endblock %}
