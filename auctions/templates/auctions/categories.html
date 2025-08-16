@@ -2,7 +2,11 @@
 
 
 {% block body %}
-    <h2>Category: </h2>
+    <div class="category-head">
+        <p >SHOP TOP CATEGORIES</p>
+        <a href="#">View All</a>
+    </div>
+    
  
         {% for category in categories %}
         <div class="image-container category_image">
@@ -16,5 +20,8 @@
     {% if not categories %}
         <p>No categories available.</p>
     {% endif %}
-    <a href="{% url 'create' %}" class="btn btn-primary">Create Auction</a>     
+
+    <div class="create-auction-btn">
+        <a href="{% url 'create' %}" class="btn btn-primary">Create Auction</a>     
+    </div>
 {% endblock %}

@@ -35,6 +35,33 @@ body {
   overflow: hidden; 
 }
 
+.category-head {
+    margin: 40px 0 53px 0;
+    color: #333;
+    text-align: center;
+}
+
+.category-head p {
+    font-size: 24px;
+    /* font-weight: bold; */
+    margin-bottom: 10px;
+}
+
+.category-head a{
+    color: #007bff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+
+.create-auction-btn {
+    margin: 20px 0;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   
+}
+
 .card img, .auction-item .left-side img, .category_image {
   transition: transform 0.3s ease-in-out; 
   display: block; 
@@ -297,3 +324,5 @@ body {
     background-color: red;
     color: white;
 }
+
+
