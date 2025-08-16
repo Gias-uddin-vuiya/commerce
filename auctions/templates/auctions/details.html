@@ -65,6 +65,21 @@
                                 <p class="message {{ message.tags }}">{{ message }}</p>
                             {% endfor %}
                         {% endif %}
+                        <!-- Show the winner of acution -->
+                        {% if not auction.is_active %}
+                            <!-- <p>This auction is closed.</p> -->
+                            {% if auction.winner %}
+                                {% if user.is_authenticated and user == auction.winner %}
+                                    <p>🎉 Congratulations! You won this auction.</p>
+                                {% else %}
+                                    <p>🏆 Winner: {{ auction.winner.username }}</p>
+                                {% endif %}
+                            {% else %}
+                                <p>No winner — no bids were placed.</p>
+                            {% endif %}
+                        {% endif %}
+
+
                      {% else %}
                         <p><a href="{% url 'login' %}">Login</a> to manage your watchlist and place bids.</p>
                     {% endif %}
@@ -72,93 +87,66 @@
             </div>
             <div class="line"></div>
 
-<!-- Nav Tabs -->
-<ul class="nav nav-tabs" id="auctionTab" role="tablist">
-  <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
-      Comments
-    </button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link " id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">
-      Details Info
-    </button>
-  </li>
-</ul>
-
-
-<div class="tab-content p-3 border border-top-0 rounded-bottom" id="auctionTabContent">
-  <!-- comment section-->
-        <!-- comment section -->
-    <div class="tab-pane fade show active" id="details" role="tabpanel">
-        {% if user.is_authenticated %}
-            <div class="comments-section">
-                <h4 class="comments-title">Comments</h4>
-                <form action="{% url 'add_comment' auction.id %}" method="post" class="comment-form">
-                    {% csrf_token %}
-                    <textarea name="content" rows="3" placeholder="Add a comment..." required></textarea>
-                    <button type="submit" class="btn btn-post">Post Comment</button>
-                </form>
-
-                <ul class="comments-list">
-                    {% for comment in auction.comments.all %}
-                        <li class="comment-item">
-                            <strong class="comment-user">{{ comment.user.username }}</strong>
-                            <span class="comment-date">({{ comment.created_at|date:"Y-m-d H:i" }})</span>
-                            <p class="comment-text">{{ comment.content }}</p>
-                        </li>
-                    {% empty %}
-                        <li class="no-comments">No comments yet.</li>
-                    {% endfor %}
-                </ul>
-
-                <a href="{% url 'index' %}" class="btn btn-back">← Back to Listings</a>
+            <!-- Nav Tabs -->
+            <ul class="nav nav-tabs" id="auctionTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
+                Comments
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link " id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">
+                Details Info
+                </button>
+            </li>
+            </ul>
+            <!-- add data for comment and details info -->
+            <div class="tab-content p-3 border border-top-0 rounded-bottom" id="auctionTabContent">
+            <!-- comment section-->
+                <div class="tab-pane fade show active" id="details" role="tabpanel">
+                    {% if user.is_authenticated %}
+                        <div class="comments-section">
+                            <h4 class="comments-title">Comments</h4>
+                            <form action="{% url 'add_comment' auction.id %}" method="post" class="comment-form">
+                                {% csrf_token %}
+                                <textarea name="content" rows="3" placeholder="Add a comment..." required></textarea>
+                                <button type="submit" class="btn btn-post">Post Comment</button>
+                            </form>
+                            <ul class="comments-list">
+                                {% for comment in auction.comments.all %}
+                                    <li class="comment-item">
+                                        <strong class="comment-user">{{ comment.user.username }}</strong>
+                                        <span class="comment-date">({{ comment.created_at|date:"Y-m-d H:i" }})</span>
+                                        <p class="comment-text">{{ comment.content }}</p>
+                                    </li>
+                                {% empty %}
+                                    <li class="no-comments">No comments yet.</li>
+                                {% endfor %}
+                            </ul>
+                            <a href="{% url 'index' %}" class="btn btn-back">← Back to Listings</a>
+                        </div>
+                </div>
+            <!-- Details Info -->
+            <div class="tab-pane fade show " id="info" role="tabpanel">
+                        <p>Title: {{ auction.title }}</p>
+                        <p>Description: {{ auction.description }}</p>
+                        <p>Starting Bid: ${{ auction.starting_bid }}</p>
+                        <!-- add higher bids -->
+                        {% if highest_bid %}
+                            <p>Current highest bid: ${{ highest_bid }}</p>
+                        {% else %}
+                            <p>No bids yet</p>
+                        {% endif %}
+                        <p>Is Active: {{ auction.is_active|yesno:"Yes,No" }}</p>
+                        <p>Created by: {{ auction.creator.username }}</p>
+                        <p>Created on: {{ auction.created_at }}</p>   
             </div>
-       
-    </div>
-  <!-- Details Info -->
-  <div class="tab-pane fade show " id="info" role="tabpanel">
-            <h4>{{ auction.title }}</h4>
-            <p>{{ auction.description }}</p>
-            <p>Starting Bid: ${{ auction.starting_bid }}</p>
-            <p>Created by: {{ auction.creator.username }}</p>
-            <p>Created on: {{ auction.created_at }}</p>
-            <!-- add higher bids -->
-            {% if highest_bid %}
-                <p>Current highest bid: ${{ highest_bid }}</p>
-            {% else %}
-                <p>No bids yet</p>
-            {% endif %}
-  </div>
-
-
-
-    {% else %}
-        <p>No details available for this auction.</p>
-    {% endif %}
-
-  </div>
-</div>
-
-
-
-
-
-            <!-- Show the winner of acution -->
-             {% if not auction.is_active %}
-                <p>This auction is closed.</p>
-                {% if auction.winner %}
-                    {% if user.is_authenticated and user == auction.winner %}
-                        <p>🎉 Congratulations! You won this auction.</p>
-                    {% else %}
-                        <p>🏆 Winner: {{ auction.winner.username }}</p>
-                    {% endif %}
                 {% else %}
-                    <p>No winner — no bids were placed.</p>
+                    <p>No details available for this auction.</p>
                 {% endif %}
-            {% endif %}
-
+            </div>
         </div>
+    </div>
     {% else %}
         <p>No details available for this auction.</p>
     {% endif %}

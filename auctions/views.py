@@ -68,12 +68,6 @@ def details(request, auction_id):
     # Fetch the auction by ID
     try:
         auction = Auctions.objects.get(id=auction_id)
-       
-        # User-specific watchlist count (only if authenticated)
-        user_watchlist_count = request.user.watchlist.count() if request.user.is_authenticated else 0
-
-        # Total number of people who watchlisted THIS auction
-        total_watchlist_count = Watchlist.objects.filter(auction=auction).count()
 
     except Auctions.DoesNotExist:
         return HttpResponse("Auction not found.", status=404)
@@ -108,7 +102,7 @@ def details(request, auction_id):
 
         return redirect("details", auction_id=auction_id)
     
-     # Get current highest bid (to show in template)
+    # Get current highest bid (to show in template)
     current_bid = Bids.objects.filter(auction=auction).order_by('-bid_amount').first()
     highest_bid = current_bid.bid_amount if current_bid else None
 
@@ -117,9 +111,7 @@ def details(request, auction_id):
     return render(request, "auctions/details.html", {
         "auction": auction,
         "in_watchlist": in_watchlist,
-        "highest_bid": highest_bid,
-        "user_watchlist_count": user_watchlist_count,
-        "total_watchlist_count": total_watchlist_count,
+        "highest_bid": highest_bid
     })
 
 def categories(request):
