@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -22,10 +23,8 @@ def index(request):
         "auctions": auctions,
     })
 
+@login_required(login_url='login')
 def my_listing(request):
-    if not request.user.is_authenticated:
-        messages.error(request, "You must be logged in to view your listings.")
-        return redirect("login")
     # Fetch auctions created by the logged-in user
     auctions = Auctions.objects.filter(creator=request.user).annotate(
         total_watchlist_count=Count('watchlist_items', distinct=True),
@@ -38,7 +37,9 @@ def my_listing(request):
         "user": request.user
     })
 
+@login_required(login_url='login')
 def watchlist(request):
+   
     user_watchlist = Watchlist.objects.filter(user=request.user)
     auctions = [item.auction for item in user_watchlist]
     auctions = Auctions.objects.filter(id__in=[auction.id for auction in auctions]).annotate(
@@ -55,6 +56,7 @@ def watchlist(request):
     })
 
 # it will add and remove the auction from the watchlist
+@login_required(login_url='login')
 def toggle_watchlist(request, auction_id):
     auction = get_object_or_404(Auctions, pk=auction_id)
     watchlist_item, created = Watchlist.objects.get_or_create(user=request.user, auction=auction)
@@ -130,7 +132,7 @@ def category_details(request, category_id):
         "auctions": auctions
     })
 
-
+@login_required(login_url='login')
 def create(request):
     categories = Category.objects.all()
     
@@ -172,6 +174,7 @@ def create(request):
         "message": "Create Auction"
     })
 
+@login_required(login_url='login')
 def close_auction(request, auction_id):
     auction = get_object_or_404(Auctions, pk=auction_id)
 
@@ -191,6 +194,7 @@ def close_auction(request, auction_id):
     #     "auction": auction
     #     })
 
+@login_required(login_url='login')
 def close_auctions(request):
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to view closed auctions.")
@@ -240,7 +244,7 @@ def login_view(request):
     else:
         return render(request, "auctions/login.html")
 
-
+@login_required(login_url='login')
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
